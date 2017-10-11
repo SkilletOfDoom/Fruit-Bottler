@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //class file and formatting pulled from Nathan Williams during lecture, minor changes from Andrew Kerwin
+//Additional assistance with concepts from Cordell Andersen
 public class AssemblyLine {
 	private final List<Orange> oranges;
 

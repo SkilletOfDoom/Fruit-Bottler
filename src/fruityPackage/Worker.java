@@ -1,6 +1,7 @@
 package fruityPackage;
 
 //Worker class made by Andrew Kerwin with some plant class features made by Nathan Williams
+//Additional assistance with concepts from Cordell Andersen
 public class Worker implements Runnable {
 
 	// We make the lines each worker needs to know about (which ain't all)

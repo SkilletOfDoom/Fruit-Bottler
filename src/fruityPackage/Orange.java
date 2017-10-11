@@ -1,6 +1,7 @@
 package fruityPackage;
 
 //Orange class from moodle, coded by Nate Williams with minor edits from Andrew Kerwin
+//Additional assistance with concepts from Cordell Andersen
 public class Orange {
 
 	// State of oranges

@@ -1,6 +1,7 @@
 package fruityPackage;
 
 //Plant Double Threaded class from moodle, coded by Nate Williams and edited heavily by Andrew Kerwin
+//Additional assistance with concepts from Cordell Andersen
 public class Plant implements Runnable {
 
 	// How long do we want to run the juice processing
