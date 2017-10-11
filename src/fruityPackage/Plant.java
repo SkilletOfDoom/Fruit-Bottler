@@ -2,24 +2,24 @@ package fruityPackage;
 
 //Plant Double Threaded class from moodle, coded by Nate Williams and edited heavily by Andrew Kerwin
 public class Plant implements Runnable {
-	
+
 	// How long do we want to run the juice processing
 	public static final long PROCESSING_TIME = 5 * 1000;
-	
-	//How many manufactories
+
+	// How many manufactories
 	private static final int NUM_PLANTS = 2;
-	
-	//Workers
+
+	// Workers
 	private static final int NUM_WORKERS = Orange.State.values().length - 1;
-	
-	//Remember, we want 1 more line than worker so each has an in + out
+
+	// Remember, we want 1 more line than worker so each has an in + out
 	private static final int NUM_LINES = NUM_WORKERS + 1;
-	
-	//Create thread for plants
+
+	// Create thread for plants
 	public final int ORANGES_PER_BOTTLE = 2;
 	private final Thread thread;
-	
-	//Statistic ints
+
+	// Statistic ints
 	public int orangesProvided;
 	public int orangesUnused;
 	public int orangesFetched;
@@ -28,16 +28,15 @@ public class Plant implements Runnable {
 	public int orangesBottled;
 	public int orangesProcessed;
 	public int orangesQualityAssuranceManned;
-	
-	//Enables work when true (by default, yes)
+
+	// Enables work when true (by default, yes)
 	private volatile boolean timeToWork;
-	
-	//Our worker array
+
+	// Our worker array
 	public Worker[] workers;
-	
-	
+
 	public static void main(String[] args) {
-		
+
 		// Startup the plants
 		Plant[] plants = new Plant[NUM_PLANTS];
 		for (int i = 0; i < NUM_PLANTS; i++) {
@@ -48,28 +47,30 @@ public class Plant implements Runnable {
 		// Give the plants time to do work
 		delay(PROCESSING_TIME, "Plant malfunction");
 
-		// Stop the plants and workers in each plant, and wait for them to shutdown
+		// Stop the plants and workers in each plant, and wait for them to
+		// shutdown
 		for (Plant p : plants) {
 			for (Worker w : p.workers) {
 				w.stopWorker();
-				//System.out.println("Told him to stop");
+				// System.out.println("Told him to stop");
 			}
 
 			p.stopPlant();
 
 		}
-		
-		//Tells plants and workers in plants to wait to stop
+
+		// Tells plants and workers in plants to wait to stop
 		for (Plant p : plants) {
 			for (Worker w : p.workers) {
 				w.wWaitToStop();
-				//System.out.println("Worker is done.");
+				// System.out.println("Worker is done.");
 			}
 			p.waitToStop();
-			//System.out.println("Plant stoppage detected.");
+			// System.out.println("Plant stoppage detected.");
 		}
 
-		// Summarize the results (Provided is oranges handled while unused is non-fetched (stage 1)
+		// Summarize the results (Provided is oranges handled while unused is
+		// non-fetched (stage 1)
 		int totalProvided = 0;
 		int totalUnused = 0;
 		int totalFetched = 0;
@@ -88,7 +89,8 @@ public class Plant implements Runnable {
 			totalJuiced += p.getSqueezedOranges();
 			totalBottled += p.getBottledOranges();
 			totalQualityAssuranceManned += p.getQualityAssuranceMannedOranges();
-			//processed is kind of useless since we won't do work on a processed orange
+			// processed is kind of useless since we won't do work on a
+			// processed orange
 			totalProcessed += p.getProcessedOranges();
 			totalBottles += p.getBottles();
 			totalWasted += p.getWaste();
@@ -103,11 +105,12 @@ public class Plant implements Runnable {
 		System.out.println("Total peeled: " + totalPeeled);
 		System.out.println("Total squeezed: " + totalJuiced);
 		System.out.println("Total bottled: " + totalBottled);
-		System.out.println("Total quality assurance manned: " + totalQualityAssuranceManned);
+		System.out.println("Total quality assurance manned: "
+				+ totalQualityAssuranceManned);
 		System.out.println("Total processed: " + totalProcessed);
 	}
 
-	//delay method for workers to work
+	// delay method for workers to work
 	private static void delay(long time, String errMsg) {
 		long sleepTime = Math.max(1, time);
 		try {
@@ -117,13 +120,13 @@ public class Plant implements Runnable {
 		}
 	}
 
-	//making assembly line a class variable which we initialize in constructor
+	// making assembly line a class variable which we initialize in constructor
 	AssemblyLine[] lines;
-	
-	//Plant constructor
+
+	// Plant constructor
 	Plant() {
-		
-		//Statistics and thread creation for plants
+
+		// Statistics and thread creation for plants
 		orangesProvided = 0;
 		orangesUnused = 0;
 		orangesFetched = 0;
@@ -134,71 +137,72 @@ public class Plant implements Runnable {
 		orangesProcessed = 0;
 		thread = new Thread(this, "Plant");
 
-		//initialized lines
+		// initialized lines
 		lines = new AssemblyLine[NUM_LINES];
-		
-		//creation of assembly lines for workers
+
+		// creation of assembly lines for workers
 		for (int i = 0; i < NUM_LINES; i++) {
 			lines[i] = new AssemblyLine();
 		}
 
-		//initialized workers
+		// initialized workers
 		workers = new Worker[NUM_WORKERS];
-		
-		//creates workers and assigns them their lines
-			for (int i = 0; i < NUM_WORKERS; i++) {
-				workers[i] = new Worker(lines[i], lines[i + 1]);
-				workers[i].startWorker();
-			
+
+		// creates workers and assigns them their lines
+		for (int i = 0; i < NUM_WORKERS; i++) {
+			workers[i] = new Worker(lines[i], lines[i + 1]);
+			workers[i].startWorker();
+
 		}
 
 	}
 
-	//Start plant thread which will provide oranges
+	// Start plant thread which will provide oranges
 	public void startPlant() {
 		timeToWork = true;
 		thread.start();
 	}
 
-	//run method will state plant is running and spawn oranges while timeToWork is true
+	// run method will state plant is running and spawn oranges while timeToWork
+	// is true
 	public void run() {
 		System.out.println(Thread.currentThread().getName()
 				+ " is processing oranges.");
 		while (timeToWork) {
-			
-			//defines orange to be created
+
+			// defines orange to be created
 			Orange orange = new Orange();
-			
-			//increments per orange made
+
+			// increments per orange made
 			orangesProvided++;
 			System.out.print(".");
-			
-			//places created orange on first line for first worker
+
+			// places created orange on first line for first worker
 			lines[0].addOrange(orange);
 		}
 		System.out.println("");
 	}
-	
-	//stops plant operations
+
+	// stops plant operations
 	public void stopPlant() {
 		timeToWork = false;
 	}
 
-	//waits for plant to cease work
+	// waits for plant to cease work
 	public void waitToStop() {
-		try {	
+		try {
 			thread.join();
 		} catch (InterruptedException e) {
 			System.err.println(thread.getName() + " stop malfunction");
 		}
 	}
 
-	//Oranges that have been handled in any way
+	// Oranges that have been handled in any way
 	public int getProvidedOranges() {
 		return orangesProvided;
 	}
-	
-	//Oranges in beginning state that don't get handled after provision
+
+	// Oranges in beginning state that don't get handled after provision
 	public int getUnusedOranges() {
 		return lines[0].countOranges();
 	}
@@ -227,12 +231,14 @@ public class Plant implements Runnable {
 		return lines[6].countOranges();
 	}
 
-	//Since oranges will not be technically "processed" we do Q/A'd oranges as dividend
+	// Since oranges will not be technically "processed" we do Q/A'd oranges as
+	// dividend
 	public int getBottles() {
 		return orangesQualityAssuranceManned / ORANGES_PER_BOTTLE;
 	}
 
-	//We want oranges unused since provided would be all handled oranges (which isn't necessarily waste)
+	// We want oranges unused since provided would be all handled oranges (which
+	// isn't necessarily waste)
 	public int getWaste() {
 		return orangesUnused % ORANGES_PER_BOTTLE;
 	}
