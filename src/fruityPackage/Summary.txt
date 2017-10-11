@@ -1,0 +1,13 @@
+This program's intended function is to take multiple threaded processing in java
+and apply it to a real life example of bottling oranges. The goals of this are to
+have the threads pass work to each other, and be able to do some basic logic. It
+has 4 classes with the main method in the plant file to achieve this task. The 
+primary principle is that the worker threads process the oranges within each plant
+with the aims to get their work, do their work, and send their work to the next if
+necessary.
+
+One thing this lab could have for improvement is a driver class. That is, the main
+method would have its own class file and some more passing variables, but then we
+see what each class's purpose is individually. Another still would be some of the
+statistics seeing fixing and improvement, as most but not all work as intended, and
+some are even retooled from the original iterations to ignore some basic problems.
